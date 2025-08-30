@@ -25,7 +25,7 @@ SunglassLabel.Parent = SunglassFrame
 
 -- Hub
 local HubFrame = Instance.new("Frame")
-HubFrame.Size = UDim2.new(0,220,0,200)
+HubFrame.Size = UDim2.new(0,240,0,250)
 HubFrame.Position = UDim2.new(0,80,0,20)
 HubFrame.BackgroundColor3 = Color3.fromRGB(30,30,30)
 HubFrame.Active = true
@@ -33,7 +33,6 @@ HubFrame.Draggable = true
 HubFrame.Visible = false
 HubFrame.Parent = ScreenGui
 
--- اسم صاحب الحقوق
 local OwnerLabel = Instance.new("TextLabel")
 OwnerLabel.Size = UDim2.new(1,0,0,20)
 OwnerLabel.Position = UDim2.new(0,0,0,0)
@@ -42,103 +41,83 @@ OwnerLabel.TextColor3 = Color3.fromRGB(255,255,255)
 OwnerLabel.Text = "الاونر: XDYT99"
 OwnerLabel.Parent = HubFrame
 
--- صفحة القوانين
-local RulesFrame = Instance.new("Frame")
-RulesFrame.Size = HubFrame.Size
-RulesFrame.Position = HubFrame.Position
-RulesFrame.BackgroundColor3 = Color3.fromRGB(40,40,40)
-RulesFrame.Visible = false
-RulesFrame.Active = true
-RulesFrame.Draggable = true
-RulesFrame.Parent = ScreenGui
-
-local RulesLabel = Instance.new("TextLabel")
-RulesLabel.Size = UDim2.new(1,-10,1,-40)
-RulesLabel.Position = UDim2.new(0,5,0,5)
-RulesLabel.BackgroundTransparency = 1
-RulesLabel.TextColor3 = Color3.fromRGB(255,255,255)
-RulesLabel.TextWrapped = true
-RulesLabel.Text = "اسلام عليكم ورحمة الله وبركاته\nالسكربت الي انت تستخدمه من صنع XDYT99 مصمم مستقل للسكربتات على gethub\n(يمنع مشاركة السكربت بدون اذني)\nاذا ودك تنشر السكربت اطلب اذني على حسابي الانستا(rtx_xd7) \nوشكرا 🖐🏽"
-RulesLabel.Parent = RulesFrame
-
-local BackButton = Instance.new("TextButton")
-BackButton.Size = UDim2.new(0,100,0,25)
-BackButton.Position = UDim2.new(0.5,-50,1,-30)
-BackButton.Text = "العودة"
-BackButton.TextColor3 = Color3.fromRGB(255,255,255)
-BackButton.BackgroundColor3 = Color3.fromRGB(80,80,80)
-BackButton.Parent = RulesFrame
-
 -- أزرار Hub
 local Buttons = {}
-local function createButton(name, pos)
+local function createButton(name, pos, parent)
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(0,150,0,30)
     btn.Position = pos
     btn.Text = name
     btn.TextColor3 = Color3.fromRGB(255,255,255)
     btn.BackgroundColor3 = Color3.fromRGB(50,50,50)
-    btn.Parent = HubFrame
+    btn.Parent = parent
     return btn
 end
 
-Buttons["الخطوط"] = createButton("الخطوط", UDim2.new(0,20,0,40))
-Buttons["المربعات"] = createButton("المربعات", UDim2.new(0,20,0,80))
-Buttons["المسافة"] = createButton("المسافة", UDim2.new(0,20,0,120))
-local RulesButton = createButton("القوانين", UDim2.new(0,20,0,160))
+-- الصفحة الرئيسية
+local MainPage = Instance.new("Frame")
+MainPage.Size = UDim2.new(1,0,1,0)
+MainPage.BackgroundTransparency = 1
+MainPage.Parent = HubFrame
 
-RulesButton.MouseButton1Click:Connect(function()
-    RulesFrame.Visible = true
-    HubFrame.Visible = false
+Buttons["الخطوط"] = createButton("الخطوط", UDim2.new(0,20,0,40), MainPage)
+Buttons["المربعات"] = createButton("المربعات", UDim2.new(0,20,0,80), MainPage)
+Buttons["المسافة"] = createButton("المسافة", UDim2.new(0,20,0,120), MainPage)
+Buttons["العدو/الفريق"] = createButton("العدو", UDim2.new(0,20,0,160), MainPage)
+
+-- الصفحة الثانية
+local SecondPage = Instance.new("Frame")
+SecondPage.Size = UDim2.new(1,0,1,0)
+SecondPage.BackgroundColor3 = Color3.fromRGB(40,40,40)
+SecondPage.Visible = false
+SecondPage.Parent = HubFrame
+
+local BackPageButton = Instance.new("TextButton")
+BackPageButton.Size = UDim2.new(0,100,0,30)
+BackPageButton.Position = UDim2.new(0,10,0,10)
+BackPageButton.Text = "⬅️ العودة"
+BackPageButton.TextColor3 = Color3.fromRGB(255,255,255)
+BackPageButton.BackgroundColor3 = Color3.fromRGB(50,50,50)
+BackPageButton.Parent = SecondPage
+
+local DistanceLabel = Instance.new("TextLabel")
+DistanceLabel.Size = UDim2.new(0,200,0,30)
+DistanceLabel.Position = UDim2.new(0,10,0,60)
+DistanceLabel.Text = "مسافة الرؤية: 100"
+DistanceLabel.TextColor3 = Color3.fromRGB(255,255,255)
+DistanceLabel.BackgroundTransparency = 1
+DistanceLabel.TextScaled = true
+DistanceLabel.Parent = SecondPage
+
+local DistanceSlider = Instance.new("TextBox")
+DistanceSlider.Size = UDim2.new(0,200,0,30)
+DistanceSlider.Position = UDim2.new(0,10,0,100)
+DistanceSlider.Text = "100"
+DistanceSlider.TextColor3 = Color3.fromRGB(255,255,255)
+DistanceSlider.BackgroundColor3 = Color3.fromRGB(60,60,60)
+DistanceSlider.Parent = SecondPage
+
+local NextPageButton = Instance.new("TextButton")
+NextPageButton.Size = UDim2.new(0,25,0,25)
+NextPageButton.Position = UDim2.new(1,-30,0,5)
+NextPageButton.Text = "➡️"
+NextPageButton.TextColor3 = Color3.fromRGB(255,255,255)
+NextPageButton.BackgroundColor3 = Color3.fromRGB(50,50,50)
+NextPageButton.Parent = MainPage
+
+NextPageButton.MouseButton1Click:Connect(function()
+    MainPage.Visible = false
+    SecondPage.Visible = true
+end)
+BackPageButton.MouseButton1Click:Connect(function()
+    SecondPage.Visible = false
+    MainPage.Visible = true
 end)
 
-BackButton.MouseButton1Click:Connect(function()
-    RulesFrame.Visible = false
-    HubFrame.Visible = true
-end)
-
--- عداد الضغطات لإخفاء السكربت
-local clickCount = 0
-local clickTime = 0
-local CLICK_LIMIT = 10
-local TIME_LIMIT = 3
-
-SunglassFrame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.Touch then
-        HubFrame.Visible = not HubFrame.Visible
-        RulesFrame.Visible = false
-
-        local currentTime = tick()
-        if currentTime - clickTime > TIME_LIMIT then clickCount = 0 end
-        clickTime = currentTime
-        clickCount = clickCount + 1
-        if clickCount >= CLICK_LIMIT then
-            ScreenGui:Destroy()
-            print("تم إخفاء السكربت!")
-        end
-    end
-end)
-
--- ESP
-local tracers, boxes, distancesText = {}, {}, {}
+-- مؤشرات ESP
 local espLinesEnabled, espBoxesEnabled, espDistanceEnabled = false, false, false
-
-local function createTracer()
-    local line = Drawing.new("Line")
-    line.Thickness = 2
-    line.Color = Color3.fromRGB(0,255,0)
-    line.Visible = false
-    return line
-end
-
-local function createBox()
-    local box = Drawing.new("Square")
-    box.Thickness = 2
-    box.Color = Color3.fromRGB(0,255,0)
-    box.Filled = false
-    box.Visible = false
-    return box
-end
+local targetEnemy = true
+local maxDistance = 100
 
 local function createIndicator(button, isEnabled)
     local ind = Instance.new("TextLabel")
@@ -157,7 +136,9 @@ end
 local lineIndicator = createIndicator(Buttons["الخطوط"], espLinesEnabled)
 local boxIndicator = createIndicator(Buttons["المربعات"], espBoxesEnabled)
 local distanceIndicator = createIndicator(Buttons["المسافة"], espDistanceEnabled)
+local targetIndicator = createIndicator(Buttons["العدو/الفريق"], targetEnemy)
 
+-- أزرار التحكم
 Buttons["الخطوط"].MouseButton1Click:Connect(function()
     espLinesEnabled = not espLinesEnabled
     lineIndicator.Text = espLinesEnabled and "ON" or "OFF"
@@ -173,8 +154,41 @@ Buttons["المسافة"].MouseButton1Click:Connect(function()
     distanceIndicator.Text = espDistanceEnabled and "ON" or "OFF"
     distanceIndicator.TextColor3 = espDistanceEnabled and Color3.fromRGB(0,255,0) or Color3.fromRGB(255,0,0)
 end)
+Buttons["العدو/الفريق"].MouseButton1Click:Connect(function()
+    targetEnemy = not targetEnemy
+    Buttons["العدو/الفريق"].Text = targetEnemy and "العدو" or "فريقي"
+    targetIndicator.Text = targetEnemy and "ON" or "OFF"
+    targetIndicator.TextColor3 = targetEnemy and Color3.fromRGB(0,255,0) or Color3.fromRGB(255,0,0)
+end)
 
--- تنظيف ESP
+DistanceSlider.FocusLost:Connect(function()
+    local val = tonumber(DistanceSlider.Text)
+    if val then
+        maxDistance = val
+        DistanceLabel.Text = "مسافة الرؤية: "..maxDistance
+    end
+end)
+
+-- ESP رسم
+local tracers, boxes, distancesText = {}, {}, {}
+
+local function createTracer()
+    local line = Drawing.new("Line")
+    line.Thickness = 2
+    line.Color = Color3.fromRGB(0,255,0)
+    line.Visible = false
+    return line
+end
+
+local function createBox()
+    local box = Drawing.new("Square")
+    box.Thickness = 2
+    box.Color = Color3.fromRGB(0,255,0)
+    box.Filled = false
+    box.Visible = false
+    return box
+end
+
 local function cleanESP(player)
     if tracers[player] then tracers[player].Visible = false end
     if boxes[player] then boxes[player].Visible = false end
@@ -198,10 +212,13 @@ Players.PlayerAdded:Connect(function(player)
     if player ~= LocalPlayer then setupPlayer(player) end
 end)
 
--- تحديث ESP
 RunService.RenderStepped:Connect(function()
+    local localTeam = LocalPlayer.Team
     for _, player in ipairs(Players:GetPlayers()) do
         if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and player.Character:FindFirstChild("Head") then
+            local isTarget = targetEnemy and player.Team ~= localTeam or not targetEnemy and player.Team == localTeam
+            if not isTarget then cleanESP(player) continue end
+
             local hrp = player.Character.HumanoidRootPart
             local head = player.Character.Head
             local humanoid = player.Character:FindFirstChild("Humanoid")
@@ -210,12 +227,21 @@ RunService.RenderStepped:Connect(function()
             local footPos = Camera:WorldToViewportPoint(hrp.Position - Vector3.new(0,humanoid.HipHeight+2,0))
             local distance = (hrp.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
 
-            if distance > 100 then cleanESP(player) continue end
+            if distance > maxDistance then cleanESP(player) continue end
 
             local color
-            if distance <= 50 then color = Color3.fromRGB(255,0,0)
-            elseif distance <= 70 then color = Color3.fromRGB(255,255,0)
-            else color = Color3.fromRGB(0,255,0)
+            if distance <= 20 then
+                color = Color3.fromRGB(128,0,128) -- بنفسجي
+            elseif distance <= 50 then
+                color = Color3.fromRGB(255,0,0) -- أحمر
+            elseif distance <= 85 then
+                color = Color3.fromRGB(255,255,0) -- أصفر
+            elseif distance <= 105 then
+                color = Color3.fromRGB(255,165,0) -- برتقالي
+            elseif distance <= 144 then
+                color = Color3.fromRGB(0,255,0) -- أخضر
+            else
+                color = Color3.fromRGB(255,255,255) -- أبيض
             end
 
             if espLinesEnabled then
@@ -254,6 +280,45 @@ RunService.RenderStepped:Connect(function()
             elseif distancesText[player] then distancesText[player].Visible = false end
         else
             cleanESP(player)
+        end
+    end
+end)
+
+-- عداد ضغطات لإيقاف ESP وإخفاء السكربت
+local clickCount = 0
+local clickTime = 0
+local CLICK_LIMIT_HIDE = 15
+local TIME_LIMIT = 3
+
+SunglassFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.Touch then
+        HubFrame.Visible = not HubFrame.Visible
+        local currentTime = tick()
+        if currentTime - clickTime > TIME_LIMIT then
+            clickCount = 0
+        end
+        clickTime = currentTime
+        clickCount = clickCount + 1
+
+        if clickCount >= CLICK_LIMIT_HIDE then
+            espLinesEnabled = false
+            espBoxesEnabled = false
+            espDistanceEnabled = false
+            lineIndicator.Text = "OFF"
+            lineIndicator.TextColor3 = Color3.fromRGB(255,0,0)
+            boxIndicator.Text = "OFF"
+            boxIndicator.TextColor3 = Color3.fromRGB(255,0,0)
+            distanceIndicator.Text = "OFF"
+            distanceIndicator.TextColor3 = Color3.fromRGB(255,0,0)
+
+            for _, player in ipairs(Players:GetPlayers()) do
+                if tracers[player] then tracers[player].Visible = false end
+                if boxes[player] then boxes[player].Visible = false end
+                if distancesText[player] then distancesText[player].Visible = false end
+            end
+
+            ScreenGui:Destroy()
+            print("تم إيقاف ESP وإخفاء السكربت!")
         end
     end
 end)
