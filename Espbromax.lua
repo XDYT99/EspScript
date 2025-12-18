@@ -34,9 +34,9 @@ HubFrame.Draggable = true
 HubFrame.Visible = false
 HubFrame.Parent = ScreenGui
 
--- الاسم الجديد فقط
 local OwnerLabel = Instance.new("TextLabel")
 OwnerLabel.Size = UDim2.new(1,0,0,20)
+OwnerLabel.Position = UDim2.new(0,0,0,0)
 OwnerLabel.BackgroundTransparency = 1
 OwnerLabel.TextColor3 = Color3.fromRGB(255,255,255)
 OwnerLabel.Text = "93q_f | Esp"
@@ -64,7 +64,8 @@ MainPage.Parent = HubFrame
 Buttons["الخطوط"] = createButton("الخطوط", UDim2.new(0,20,0,40), MainPage)
 Buttons["المربعات"] = createButton("المربعات", UDim2.new(0,20,0,80), MainPage)
 Buttons["المسافة"] = createButton("المسافة", UDim2.new(0,20,0,120), MainPage)
-Buttons["العدو/الفريق"] = createButton("العدو", UDim2.new(0,20,0,160), MainPage)
+Buttons["اتجاه الرأس"] = createButton("اتجاه الرأس", UDim2.new(0,20,0,160), MainPage)
+Buttons["العدو/الفريق"] = createButton("العدو", UDim2.new(0,20,0,200), MainPage)
 
 -- الصفحة الثانية
 local SecondPage = Instance.new("Frame")
@@ -98,6 +99,24 @@ DistanceSlider.TextColor3 = Color3.fromRGB(255,255,255)
 DistanceSlider.BackgroundColor3 = Color3.fromRGB(60,60,60)
 DistanceSlider.Parent = SecondPage
 
+-- طول خط اتجاه الرأس
+local HeadLineLengthLabel = Instance.new("TextLabel")
+HeadLineLengthLabel.Size = UDim2.new(0,200,0,30)
+HeadLineLengthLabel.Position = UDim2.new(0,10,0,140)
+HeadLineLengthLabel.Text = "طول خط الرأس: 5"
+HeadLineLengthLabel.TextColor3 = Color3.fromRGB(255,255,255)
+HeadLineLengthLabel.BackgroundTransparency = 1
+HeadLineLengthLabel.TextScaled = true
+HeadLineLengthLabel.Parent = SecondPage
+
+local HeadLineLengthSlider = Instance.new("TextBox")
+HeadLineLengthSlider.Size = UDim2.new(0,200,0,30)
+HeadLineLengthSlider.Position = UDim2.new(0,10,0,180)
+HeadLineLengthSlider.Text = "5"
+HeadLineLengthSlider.TextColor3 = Color3.fromRGB(255,255,255)
+HeadLineLengthSlider.BackgroundColor3 = Color3.fromRGB(60,60,60)
+HeadLineLengthSlider.Parent = SecondPage
+
 local NextPageButton = Instance.new("TextButton")
 NextPageButton.Size = UDim2.new(0,25,0,25)
 NextPageButton.Position = UDim2.new(1,-30,0,5)
@@ -116,9 +135,10 @@ BackPageButton.MouseButton1Click:Connect(function()
 end)
 
 -- مؤشرات ESP
-local espLinesEnabled, espBoxesEnabled, espDistanceEnabled = false, false, false
+local espLinesEnabled, espBoxesEnabled, espDistanceEnabled, headLineEnabled = false, false, false, false
 local targetEnemy = true
 local maxDistance = 100
+local headLineLength = 5
 
 local function createIndicator(button, isEnabled)
     local ind = Instance.new("TextLabel")
@@ -137,6 +157,7 @@ end
 local lineIndicator = createIndicator(Buttons["الخطوط"], espLinesEnabled)
 local boxIndicator = createIndicator(Buttons["المربعات"], espBoxesEnabled)
 local distanceIndicator = createIndicator(Buttons["المسافة"], espDistanceEnabled)
+local headLineIndicator = createIndicator(Buttons["اتجاه الرأس"], headLineEnabled)
 local targetIndicator = createIndicator(Buttons["العدو/الفريق"], targetEnemy)
 
 -- أزرار التحكم
@@ -155,6 +176,11 @@ Buttons["المسافة"].MouseButton1Click:Connect(function()
     distanceIndicator.Text = espDistanceEnabled and "ON" or "OFF"
     distanceIndicator.TextColor3 = espDistanceEnabled and Color3.fromRGB(0,255,0) or Color3.fromRGB(255,0,0)
 end)
+Buttons["اتجاه الرأس"].MouseButton1Click:Connect(function()
+    headLineEnabled = not headLineEnabled
+    headLineIndicator.Text = headLineEnabled and "ON" or "OFF"
+    headLineIndicator.TextColor3 = headLineEnabled and Color3.fromRGB(0,255,0) or Color3.fromRGB(255,0,0)
+end)
 Buttons["العدو/الفريق"].MouseButton1Click:Connect(function()
     targetEnemy = not targetEnemy
     Buttons["العدو/الفريق"].Text = targetEnemy and "العدو" or "فريقي"
@@ -170,8 +196,16 @@ DistanceSlider.FocusLost:Connect(function()
     end
 end)
 
+HeadLineLengthSlider.FocusLost:Connect(function()
+    local val = tonumber(HeadLineLengthSlider.Text)
+    if val then
+        headLineLength = val
+        HeadLineLengthLabel.Text = "طول خط الرأس: "..headLineLength
+    end
+end)
+
 -- ESP رسم
-local tracers, boxes, distancesText = {}, {}, {}
+local tracers, boxes, distancesText, headLines = {}, {}, {}, {}
 
 local function createTracer()
     local line = Drawing.new("Line")
@@ -190,10 +224,19 @@ local function createBox()
     return box
 end
 
+local function createHeadLine()
+    local line = Drawing.new("Line")
+    line.Thickness = 2
+    line.Color = Color3.fromRGB(0,255,0)
+    line.Visible = false
+    return line
+end
+
 local function cleanESP(player)
     if tracers[player] then tracers[player].Visible = false end
     if boxes[player] then boxes[player].Visible = false end
     if distancesText[player] then distancesText[player].Visible = false end
+    if headLines[player] then headLines[player].Visible = false end
 end
 
 local function setupPlayer(player)
@@ -202,7 +245,6 @@ local function setupPlayer(player)
     end)
     player.CharacterAdded:Connect(function(character)
         local humanoid = character:WaitForChild("Humanoid")
-        -- لا ننظف ESP أو Hub عند الموت
     end)
 end
 
@@ -245,6 +287,7 @@ RunService.RenderStepped:Connect(function()
                 color = Color3.fromRGB(255,255,255)
             end
 
+            -- خطوط ESP
             if espLinesEnabled then
                 if not tracers[player] then tracers[player] = createTracer() end
                 local tracer = tracers[player]
@@ -279,6 +322,21 @@ RunService.RenderStepped:Connect(function()
                 txt.Color = color
                 txt.Visible = onScreen
             elseif distancesText[player] then distancesText[player].Visible = false end
+
+            -- خط اتجاه الرأس
+            if headLineEnabled then
+                if not headLines[player] then headLines[player] = createHeadLine() end
+                local headLine = headLines[player]
+                local forward = head.CFrame.LookVector
+                local startPos = head.Position + Vector3.new(0,0.2,0)
+                local endPos = startPos + forward * headLineLength
+                local start2D = Camera:WorldToViewportPoint(startPos)
+                local end2D = Camera:WorldToViewportPoint(endPos)
+                headLine.From = Vector2.new(start2D.X, start2D.Y)
+                headLine.To = Vector2.new(end2D.X, end2D.Y)
+                headLine.Color = color
+                headLine.Visible = onScreen
+            elseif headLines[player] then headLines[player].Visible = false end
         else
             cleanESP(player)
         end
@@ -305,17 +363,21 @@ SunglassFrame.InputBegan:Connect(function(input)
             espLinesEnabled = false
             espBoxesEnabled = false
             espDistanceEnabled = false
+            headLineEnabled = false
             lineIndicator.Text = "OFF"
             lineIndicator.TextColor3 = Color3.fromRGB(255,0,0)
             boxIndicator.Text = "OFF"
             boxIndicator.TextColor3 = Color3.fromRGB(255,0,0)
             distanceIndicator.Text = "OFF"
             distanceIndicator.TextColor3 = Color3.fromRGB(255,0,0)
+            headLineIndicator.Text = "OFF"
+            headLineIndicator.TextColor3 = Color3.fromRGB(255,0,0)
 
             for _, player in ipairs(Players:GetPlayers()) do
                 if tracers[player] then tracers[player].Visible = false end
                 if boxes[player] then boxes[player].Visible = false end
                 if distancesText[player] then distancesText[player].Visible = false end
+                if headLines[player] then headLines[player].Visible = false end
             end
 
             ScreenGui:Destroy()
