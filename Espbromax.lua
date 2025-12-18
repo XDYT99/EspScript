@@ -5,6 +5,7 @@ local LocalPlayer = Players.LocalPlayer
 
 -- UI
 local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
 -- النظارة
@@ -33,12 +34,12 @@ HubFrame.Draggable = true
 HubFrame.Visible = false
 HubFrame.Parent = ScreenGui
 
+-- الاسم الجديد فقط
 local OwnerLabel = Instance.new("TextLabel")
 OwnerLabel.Size = UDim2.new(1,0,0,20)
-OwnerLabel.Position = UDim2.new(0,0,0,0)
 OwnerLabel.BackgroundTransparency = 1
 OwnerLabel.TextColor3 = Color3.fromRGB(255,255,255)
-OwnerLabel.Text = "الاونر: XDYT99"
+OwnerLabel.Text = "93q_f | Esp"
 OwnerLabel.Parent = HubFrame
 
 -- أزرار Hub
@@ -201,7 +202,7 @@ local function setupPlayer(player)
     end)
     player.CharacterAdded:Connect(function(character)
         local humanoid = character:WaitForChild("Humanoid")
-        humanoid.Died:Connect(function() cleanESP(player) end)
+        -- لا ننظف ESP أو Hub عند الموت
     end)
 end
 
@@ -231,17 +232,17 @@ RunService.RenderStepped:Connect(function()
 
             local color
             if distance <= 20 then
-                color = Color3.fromRGB(128,0,128) -- بنفسجي
+                color = Color3.fromRGB(128,0,128)
             elseif distance <= 50 then
-                color = Color3.fromRGB(255,0,0) -- أحمر
+                color = Color3.fromRGB(255,0,0)
             elseif distance <= 85 then
-                color = Color3.fromRGB(255,255,0) -- أصفر
+                color = Color3.fromRGB(255,255,0)
             elseif distance <= 105 then
-                color = Color3.fromRGB(255,165,0) -- برتقالي
+                color = Color3.fromRGB(255,165,0)
             elseif distance <= 144 then
-                color = Color3.fromRGB(0,255,0) -- أخضر
+                color = Color3.fromRGB(0,255,0)
             else
-                color = Color3.fromRGB(255,255,255) -- أبيض
+                color = Color3.fromRGB(255,255,255)
             end
 
             if espLinesEnabled then
